@@ -5,6 +5,7 @@ import {
 
 import { requestAPI } from './handler';
 import { bhlPlugin } from './document/plugins';
+import { toolbarPlugin } from './toolbar/plugins';
 /**
  * Initialization data for the bacalhau_lab extension.
  */
@@ -27,4 +28,4 @@ const plugin: JupyterFrontEndPlugin<void> = {
   }
 };
 
-export default [plugin, bhlPlugin];
+export default [plugin, bhlPlugin, toolbarPlugin];

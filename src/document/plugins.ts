@@ -7,7 +7,7 @@ import {
 import { WidgetTracker } from '@jupyterlab/apputils';
 
 import { IBhlViewerTracker } from '../token';
-import { BhlDocWidget } from '../widgets/bhlDocWidget';
+import { BhlDocWidget } from './bhlDocWidget';
 import { BhlDocWidgetFactory } from './widgetFactory';
 
 export const bhlPlugin: JupyterFrontEndPlugin<IBhlViewerTracker> = {
