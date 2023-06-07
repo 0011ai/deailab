@@ -3,6 +3,7 @@ import { ABCWidgetFactory, DocumentRegistry } from '@jupyterlab/docregistry';
 import { CommandRegistry } from '@lumino/commands';
 import { BhlDocWidget } from './bhlDocWidget';
 import { Widget } from '@lumino/widgets';
+import { bhlIcon } from '../utils';
 
 export class BhlDocWidgetFactory extends ABCWidgetFactory<BhlDocWidget> {
   constructor(options: BhlDocWidgetFactory.IOptions) {
@@ -24,7 +25,9 @@ export class BhlDocWidgetFactory extends ABCWidgetFactory<BhlDocWidget> {
     context.ready.then(() => {
       content.node.innerHTML = context.model.toString();
     });
-    return new BhlDocWidget({ context, content });
+    const widget = new BhlDocWidget({ context, content });
+    widget.title.icon = bhlIcon;
+    return widget;
   }
 
   private _commands?: CommandRegistry;

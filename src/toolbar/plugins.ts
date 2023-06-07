@@ -3,7 +3,7 @@ import {
   JupyterFrontEnd,
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { ICommandPalette, ToolbarButton } from '@jupyterlab/apputils';
+import { ICommandPalette } from '@jupyterlab/apputils';
 import { PathExt } from '@jupyterlab/coreutils';
 import { DocumentRegistry } from '@jupyterlab/docregistry';
 import {
@@ -16,6 +16,10 @@ import { CommandRegistry } from '@lumino/commands';
 import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
 import { IDisposable } from '@lumino/disposable';
 
+import { DeAISwitcher } from './widget';
+
+// import { bhlIcon } from '../utils';
+
 /**
  * The command IDs used by the plugin.
  */
@@ -26,7 +30,7 @@ export namespace CommandIDs {
 /**
  * A notebook widget extension that adds a voila preview button to the toolbar.
  */
-class VoilaRenderButton
+class DeAIButton
   implements DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>
 {
   /**
@@ -41,15 +45,8 @@ class VoilaRenderButton
    * Create a new extension object.
    */
   createNew(panel: NotebookPanel): IDisposable {
-    const button = new ToolbarButton({
-      className: 'voilaRender',
-      tooltip: 'Open in Bacalhau Lab',
-      onClick: () => {
-        this._commands.execute(CommandIDs.bhlOpen);
-      },
-      label: 'BHL'
-    });
-    panel.toolbar.insertAfter('cellType', 'voilaRender', button);
+    const button = new DeAISwitcher(this._commands);
+    panel.toolbar.insertAfter('cellType', 'bhlLab', button);
     return button;
   }
 
@@ -65,13 +62,7 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
     ILayoutRestorer,
     ISettingRegistry
   ],
-  activate: (
-    app: JupyterFrontEnd,
-    notebooks: INotebookTracker | null,
-    palette: ICommandPalette | null,
-    restorer: ILayoutRestorer | null,
-    settingRegistry: ISettingRegistry | null
-  ) => {
+  activate: (app: JupyterFrontEnd, notebooks: INotebookTracker | null) => {
     function getCurrent(args: ReadonlyPartialJSONObject): NotebookPanel | null {
       const widget = notebooks?.currentWidget ?? null;
       const activate = args['activate'] !== false;
@@ -106,8 +97,17 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
           let newPath = PathExt.join(path, `${fileName}.bhl`);
           try {
             const newFile = await app.serviceManager.contents.get(newPath);
+
+            const fileContent = JSON.parse(newFile.content);
             newPath = newFile.path;
-          } catch {
+            fileContent['protocol'] = args['protocol'];
+            const content = JSON.stringify(fileContent);
+
+            await app.serviceManager.contents.save(newPath, {
+              ...newFile,
+              content
+            });
+          } catch (e) {
             const newUntitled = await app.serviceManager.contents.newUntitled({
               path: path,
               type: 'file',
@@ -117,8 +117,7 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
               ...newUntitled,
               format: 'text',
               size: undefined,
-              content:
-                '{\n\t"objects": [],\n\t"options": {},\n\t"metadata": {}\n}'
+              content: `{\n\t"protocol": "${args['protocol']}"\n}`
             });
             await app.serviceManager.contents.rename(newUntitled.path, newPath);
           }
@@ -130,7 +129,7 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
       isEnabled
     });
 
-    const bhlButton = new VoilaRenderButton(commands);
+    const bhlButton = new DeAIButton(commands);
     docRegistry.addWidgetExtension('Notebook', bhlButton);
   }
 };

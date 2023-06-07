@@ -9,6 +9,7 @@ import { WidgetTracker } from '@jupyterlab/apputils';
 import { IBhlViewerTracker } from '../token';
 import { BhlDocWidget } from './bhlDocWidget';
 import { BhlDocWidgetFactory } from './widgetFactory';
+import { bhlIcon } from '../utils';
 
 export const bhlPlugin: JupyterFrontEndPlugin<IBhlViewerTracker> = {
   id: 'bhl-lab:document-plugin',
@@ -37,6 +38,7 @@ export const bhlPlugin: JupyterFrontEndPlugin<IBhlViewerTracker> = {
     // register the filetype
     app.docRegistry.addFileType({
       name: 'bhl',
+      icon: bhlIcon,
       displayName: 'BHL',
       mimeTypes: ['text/json'],
       extensions: ['.bhl', '.BHL'],
