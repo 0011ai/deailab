@@ -17,10 +17,12 @@ const plugin: JupyterFrontEndPlugin<IDeAIProtocol> = {
   provides: IDeAIProtocol,
   activate: (app: JupyterFrontEnd): IDeAIProtocol => {
     console.log('JupyterLab extension bacalhau_lab is activated!');
-    const allProtocol: IDeAIProtocol = { availableProtocol: {} };
+    const deaiData: IDeAIProtocol = {
+      availableProtocol: {}
+    };
     requestAPI<{ payload: IDict }>()
       .then(data => {
-        allProtocol.availableProtocol = data.payload;
+        deaiData.availableProtocol = data.payload['availableProtocol'];
       })
       .catch(reason => {
         console.error(
@@ -28,7 +30,7 @@ const plugin: JupyterFrontEndPlugin<IDeAIProtocol> = {
         );
       });
 
-    return allProtocol;
+    return deaiData;
   }
 };
 

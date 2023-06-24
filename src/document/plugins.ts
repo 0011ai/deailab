@@ -1,32 +1,37 @@
-import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 import {
   JupyterFrontEnd,
-  JupyterFrontEndPlugin,
-  ILayoutRestorer
+  JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-import { WidgetTracker } from '@jupyterlab/apputils';
+import { IThemeManager, WidgetTracker } from '@jupyterlab/apputils';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
 import { IBhlViewerTracker } from '../token';
+import { bhlIcon } from '../utils';
 import { BhlDocWidget } from './bhlDocWidget';
 import { BhlDocWidgetFactory } from './widgetFactory';
-import { bhlIcon } from '../utils';
 
 export const bhlPlugin: JupyterFrontEndPlugin<IBhlViewerTracker> = {
   id: 'bhl-lab:document-plugin',
   autoStart: true,
   provides: IBhlViewerTracker,
   requires: [IRenderMimeRegistry],
-  optional: [ILayoutRestorer],
-  activate: (app: JupyterFrontEnd, rendermime: IRenderMimeRegistry) => {
+  optional: [IThemeManager],
+  activate: (
+    app: JupyterFrontEnd,
+    rendermime: IRenderMimeRegistry,
+    themeManager: IThemeManager
+  ) => {
     const tracker = new WidgetTracker<BhlDocWidget>({
       namespace: 'bhl-lab:widgets'
     });
     const widgetFactory = new BhlDocWidgetFactory({
-      name: 'Bacalhau Lab',
-      fileTypes: ['bhl'],
-      defaultFor: ['bhl'],
+      name: 'DeAI',
+      fileTypes: ['deai'],
+      defaultFor: ['deai'],
       rendermime,
-      commands: app.commands
+      commands: app.commands,
+      themeManager,
+      serviceManager: app.serviceManager
     });
     widgetFactory.widgetCreated.connect((_, widget) => {
       widget.context.pathChanged.connect(() => {
@@ -37,11 +42,11 @@ export const bhlPlugin: JupyterFrontEndPlugin<IBhlViewerTracker> = {
     app.docRegistry.addWidgetFactory(widgetFactory);
     // register the filetype
     app.docRegistry.addFileType({
-      name: 'bhl',
+      name: 'deai',
       icon: bhlIcon,
-      displayName: 'BHL',
+      displayName: 'DEAI',
       mimeTypes: ['text/json'],
-      extensions: ['.bhl', '.BHL'],
+      extensions: ['.deai', '.DEAI'],
       fileFormat: 'json',
       contentType: 'file'
     });
