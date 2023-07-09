@@ -38,8 +38,10 @@ jobs:
           set -eux
           jlpm
           python -m pip install ".[test]"
-          cd ui-tests
-          jlpm install
+
+      - name: Install UI test dependencies
+        working-directory: ui-tests
+        run: jlpm install
 
       - uses: jupyterlab/maintainer-tools/.github/actions/update-snapshots@v1
         with:
