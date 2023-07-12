@@ -8,15 +8,15 @@ import { bhlPlugin } from './document/plugins';
 import { toolbarPlugin } from './toolbar/plugins';
 import { IDeAIProtocol, IDict } from './token';
 /**
- * Initialization data for the DeAILab extension.
+ * Initialization data for the deailab extension.
  */
 const plugin: JupyterFrontEndPlugin<IDeAIProtocol> = {
-  id: 'DeAILab:plugin',
+  id: 'deailab:plugin',
   description: 'A JupyterLab extension for DeAI.',
   autoStart: true,
   provides: IDeAIProtocol,
   activate: (app: JupyterFrontEnd): IDeAIProtocol => {
-    console.log('JupyterLab extension DeAILab is activated!');
+    console.log('JupyterLab extension deailab is activated!');
     const deaiData: IDeAIProtocol = {
       availableProtocol: {}
     };
@@ -26,7 +26,7 @@ const plugin: JupyterFrontEndPlugin<IDeAIProtocol> = {
       })
       .catch(reason => {
         console.error(
-          `The DeAILab server extension appears to be missing.\n${reason}`
+          `The deailab server extension appears to be missing.\n${reason}`
         );
       });
 

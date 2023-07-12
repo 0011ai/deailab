@@ -22,11 +22,11 @@ def patch_ipfshttpclient():
 
 
 def _jupyter_labextension_paths():
-    return [{"src": "labextension", "dest": "DeAILab"}]
+    return [{"src": "labextension", "dest": "deailab"}]
 
 
 def _jupyter_server_extension_points():
-    return [{"module": "DeAILab"}]
+    return [{"module": "deailab"}]
 
 
 def _load_jupyter_server_extension(server_app):
@@ -39,7 +39,7 @@ def _load_jupyter_server_extension(server_app):
     """
     patch_ipfshttpclient()
     setup_handlers(server_app.web_app)
-    name = "DeAILab"
+    name = "deailab"
     server_app.log.info(f"Registered {name} server extension")
 
 
