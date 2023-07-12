@@ -13,11 +13,13 @@ import {
 } from '@jupyterlab/notebook';
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import { CommandRegistry } from '@lumino/commands';
-import { ReadonlyPartialJSONObject } from '@lumino/coreutils';
+import { ReadonlyPartialJSONObject, UUID } from '@lumino/coreutils';
 import { IDisposable } from '@lumino/disposable';
 
 import { DeAISwitcher } from './widget';
-import { IDeAIProtocol } from '../token';
+import { IDeAIProtocol, IDict } from '../token';
+import { IDeAIResource, IDeAIState } from '../react/redux/types';
+import { requestAPI } from '../handler';
 
 /**
  * The command IDs used by the plugin.
@@ -69,7 +71,6 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
 
       return widget;
     }
-
     function isEnabled(): boolean {
       return (
         notebooks?.currentWidget !== null &&
@@ -88,13 +89,27 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
             PathExt.extname(nbFullPath),
             ''
           );
+          const nbContent = current.context.model.toJSON() as IDict;
           const protocol = args['protocol'] as string;
           const ext = args['ext'] as string;
           const path = PathExt.dirname(nbFullPath);
-          let newPath = PathExt.join(
-            path,
-            `${fileName}.${ext.toLowerCase()}.deai`
-          );
+          const deaiFileName = `${fileName}.${ext}`;
+          let newPath = PathExt.join(path, `${deaiFileName}.deai`);
+
+          const response = await requestAPI<{
+            resources: IDeAIResource[];
+            cwd: string;
+          }>('', {
+            method: 'POST',
+            body: JSON.stringify({
+              action: 'PARSE_RESOURCES',
+              payload: { nbContent, currentPath: path }
+            })
+          });
+          const resources: IDict<IDeAIResource> = {};
+          response.resources.forEach(item => {
+            resources[UUID.uuid4()] = item;
+          });
           try {
             const newFile = await app.serviceManager.contents.get(newPath);
 
@@ -104,6 +119,10 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
             fileContent['protocol'] = protocol;
             fileContent['availableImage'] =
               serverData.availableProtocol[protocol].availableImages;
+            fileContent['notebook'] = nbContent;
+            fileContent['resources'] = resources;
+            fileContent['cwd'] = response.cwd;
+            fileContent['deaiFileName'] = deaiFileName;
             const content = JSON.stringify(fileContent);
 
             await app.serviceManager.contents.save(newPath, {
@@ -116,10 +135,14 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
               type: 'file',
               ext: '.deai'
             });
-            const newContent = {
+
+            const newContent: IDeAIState = {
               protocol: protocol,
-              availableImage:
-                serverData.availableProtocol[protocol].availableImages
+              availableImages: [],
+              resources,
+              notebook: nbContent,
+              cwd: response.cwd,
+              deaiFileName
             };
             await app.serviceManager.contents.save(newUntitled.path, {
               ...newUntitled,

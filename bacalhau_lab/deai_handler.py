@@ -8,14 +8,14 @@ from .tools import check_site_exist, content_from_path
 
 class DeProtocolEnum(str, Enum):
     Bacalhau = "Bacalhau"
-    Error = "Error"
+    # Error = "Error"
 
 
 def init_data():
-    """_summary_
+    """Initialize data for the extension
 
     Returns:
-        _type_: _description_
+        Dict: The description of available protocols
     """
 
     data = {"availableProtocol": {}}
@@ -37,6 +37,15 @@ def init_data():
 
 
 def check_data(data: Dict) -> Dict:
+    """Check the availability of the resource
+
+    Args:
+        data (Dict): resource data to be checked.
+
+    Returns:
+        Dict: Dictionary of invalid resources.
+    """
+
     resources = data.get("resources", {})
     response = {}
     MSG = "Resource is not available"
@@ -48,14 +57,11 @@ def check_data(data: Dict) -> Dict:
         else:
             if value["type"] == "file":
                 exist = os.path.exists(value["value"])
-                response[key] = {"validated": exist, "message": None}
-                if not exist:
-                    response[key]["message"] = MSG
+
             elif value["type"] == "url":
                 exist = check_site_exist(value["value"])
 
-            response[key] = {"validated": exist, "message": None}
             if not exist:
-                response[key]["message"] = MSG
+                response[key] = {"validated": exist, "message": MSG}
 
     return response

@@ -1,12 +1,14 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { IDeAIResource, IDeAIState } from './types';
+import { IDeAIResource, IDeAIState, ILogContent } from './types';
 
 export const INITIAL_STATE: IDeAIState = {
   protocol: undefined,
-  availableImage: [],
+  availableImages: [],
   dockerImage: undefined,
   customDockerImage: undefined,
-  resources: {}
+  resources: {},
+  polling: false,
+  resultAvailable: false
 };
 
 export const slice = createSlice({
@@ -25,6 +27,14 @@ export const slice = createSlice({
       action: PayloadAction<string | undefined>
     ) => {
       return { ...state, customDockerImage: action.payload };
+    },
+    addCustomDockerImage: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        availableImages: [...state.availableImages, action.payload],
+        dockerImage: action.payload,
+        customDockerImage: ''
+      };
     },
     addResource: (state, action: PayloadAction<string>) => {
       const id = action.payload;
@@ -66,6 +76,102 @@ export const slice = createSlice({
       } else {
         return { ...state };
       }
+    },
+    cleanLog: state => {
+      return {
+        ...state,
+        log: []
+      };
+    },
+    logError: (
+      state,
+      action: PayloadAction<{ msg: string; reset?: boolean }>
+    ) => {
+      const currentLog = state.log ?? [];
+      const currentDate = new Date();
+      const timestamp = currentDate.getTime();
+      return {
+        ...state,
+        log: action.payload.reset
+          ? [{ level: 'error', content: action.payload.msg, timestamp }]
+          : [
+              ...currentLog,
+              { level: 'error', content: action.payload.msg, timestamp }
+            ]
+      };
+    },
+    logInfo: (
+      state,
+      action: PayloadAction<{ msg: string; reset?: boolean }>
+    ) => {
+      const currentLog = state.log ?? [];
+      const currentDate = new Date();
+      const timestamp = currentDate.getTime();
+      return {
+        ...state,
+        log: action.payload.reset
+          ? [{ level: 'info', content: action.payload.msg, timestamp }]
+          : [
+              ...currentLog,
+              { level: 'info', content: action.payload.msg, timestamp }
+            ]
+      };
+    },
+    logExecution: (state, action: PayloadAction<ILogContent[]>) => {
+      const currentLog = state.log ?? [];
+      const currentDate = new Date();
+      const timestamp = currentDate.getTime();
+      if (action.payload.length > currentLog.length) {
+        const content = [...currentLog];
+        for (let idx = currentLog.length; idx < action.payload.length; idx++) {
+          const element = action.payload[idx];
+          let logLine = '';
+          const comment = element.comment ? ` - ${element.comment}` : '';
+          switch (element.type) {
+            case 'JobLevel':
+              logLine = `${element.type} - ${element.job_state.new}${comment}`;
+              break;
+            case 'ExecutionLevel':
+              logLine = `${element.type} - ${element.execution_state.new}${comment}`;
+              break;
+            default:
+              break;
+          }
+          content.push({
+            level: 'info',
+            content: logLine,
+            timestamp
+          });
+        }
+
+        return {
+          ...state,
+          log: content
+        };
+      } else {
+        return { ...state };
+      }
+    },
+    togglePolling: (
+      state,
+      action: PayloadAction<{
+        startPolling: boolean;
+        sessionId?: string;
+        jobId?: string;
+      }>
+    ) => ({
+      ...state,
+      polling: action.payload.startPolling
+    }),
+    stopPolling: state => ({
+      ...state,
+      polling: false
+    }),
+    updateResultStatus: (state, action: PayloadAction<boolean>) => {
+      return { ...state, resultAvailable: action.payload };
+    },
+    updateJobId: (state, action: PayloadAction<string | undefined>) => {
+      return { ...state, jobId: action.payload };
     }
   }
 });
