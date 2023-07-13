@@ -1,6 +1,6 @@
 {
   "name": "deailab",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A JupyterLab extension for DeAI.",
   "keywords": [
     "jupyter",
