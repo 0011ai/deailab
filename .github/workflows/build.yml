@@ -154,7 +154,7 @@ jobs:
         mkdir ~/.bacalhau
         ssh-keygen -P "" -t rsa -b 4096 -m pem -f ~/.bacalhau/user_id.pem
         python -m pip install -r test_requirement.txt
-        python -m pip install -U "jupyterlab>=4.0.0,<5"
+        python -m pip install -U "jupyterlab==4.0.2"
         python -m pip install deairequest
 
     - name: Download extension package
@@ -165,7 +165,7 @@ jobs:
     - name: Install the extension
       run: |
         set -eux
-        python -m pip install "jupyterlab>=4.0.0,<5" deailab*.whl
+        python -m pip install "jupyterlab==4.0.2" deailab*.whl
 
     - name: Install dependencies
       working-directory: ui-tests
