@@ -19,6 +19,7 @@ import { Contents } from '@jupyterlab/services';
 import { Dialog, showDialog } from '@jupyterlab/apputils';
 import { Poll } from '@lumino/polling';
 import { checkResultStatus } from './tools';
+import { PerformanceSetting } from './components/performanceSetting';
 
 export function ControlPanel() {
   const jupyterContext = useJupyter();
@@ -238,6 +239,11 @@ export function ControlPanel() {
         <StyledAccordion
           title="DOCKER IMAGE"
           panel={<GeneralSetting error={dockerError} />}
+          defaultExpanded={true}
+        />
+        <StyledAccordion
+          title="PERFORMANCE"
+          panel={<PerformanceSetting />}
           defaultExpanded={true}
         />
         <StyledAccordion

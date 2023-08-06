@@ -140,6 +140,7 @@ export const toolbarPlugin: JupyterFrontEndPlugin<void> = {
               protocol: protocol,
               availableImages: [],
               resources,
+              performance: { cpu: 2, gpu: 1, memory: 2 },
               notebook: nbContent,
               cwd: response.cwd,
               deaiFileName

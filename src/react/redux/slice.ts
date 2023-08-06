@@ -6,6 +6,7 @@ export const INITIAL_STATE: IDeAIState = {
   availableImages: [],
   dockerImage: undefined,
   customDockerImage: undefined,
+  performance: { cpu: 2, gpu: 1, memory: 2 },
   resources: {},
   polling: false,
   resultAvailable: false
@@ -27,6 +28,12 @@ export const slice = createSlice({
       action: PayloadAction<string | undefined>
     ) => {
       return { ...state, customDockerImage: action.payload };
+    },
+    setPerformance: (
+      state,
+      action: PayloadAction<{ cpu?: number; gpu?: number; memory?: number }>
+    ) => {
+      return { ...state, performance: action.payload };
     },
     addCustomDockerImage: (state, action: PayloadAction<string>) => {
       return {
