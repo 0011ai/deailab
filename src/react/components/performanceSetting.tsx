@@ -10,7 +10,6 @@ import { reduxAction } from '../redux/slice';
 export function PerformanceSetting() {
   const performance = useAppSelector(state => state.performance);
   const dispatch = useAppDispatch();
-  console.log(performance, dispatch);
 
   const onChange = React.useCallback(
     (type: 'cpu' | 'gpu' | 'memory') =>
@@ -80,7 +79,7 @@ export function PerformanceSetting() {
       <FormControl sx={{ width: '100%' }} size="small">
         <TextField
           label="Memory size in GB"
-          inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+          sx={{ '& .MuiInputBase-inputSizeSmall': { fontSize: '0.9rem' } }}
           type="number"
           size="small"
           value={performance?.memory ?? 2}

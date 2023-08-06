@@ -19,7 +19,14 @@ export class DeAIPanel extends ReactWidget {
   constructor(private options: DeAIPanel.IOptions) {
     super();
     this.addClass('jp-deai-panel');
-    this._store = storeFactory();
+    const store = (this._store = storeFactory());
+    store.subscribe(() => {
+      const contentWithoutLog = JSON.parse(JSON.stringify(store.getState()));
+      delete contentWithoutLog['log'];
+      if (options.context.isReady) {
+        options.context.model.fromJSON(contentWithoutLog);
+      }
+    });
     this.options.context.ready.then(async () => {
       const state = this.options.context.model.toJSON() as any;
       const protocol = state['protocol'];

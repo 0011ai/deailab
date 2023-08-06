@@ -68,7 +68,6 @@ export function ControlPanel() {
     if (!context || !serviceManager) {
       return;
     }
-
     const path = context.path;
     const currentFile = await serviceManager.contents.get(path);
     await serviceManager.contents.save(context.path, {
