@@ -91,6 +91,12 @@ class JobManager:
             return
         connector.set_docker_image(docker_image)
 
+        # Set performance
+        performance = data.get("performance", {})
+        connector.set_cpu(str(performance.get("cpu", 2)))
+        connector.set_gpu(str(performance.get("gpu", 1)))
+        connector.set_memory(f'{performance.get("memory", 2)}Gb')
+        print("#######", connector.memory)
         # Set resources
         connector.remove_datasets()
         resources = data.get("resources", {})

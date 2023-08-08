@@ -1,4 +1,4 @@
-import { Stack, TextField, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,7 +18,7 @@ export function PerformanceSetting() {
           | SelectChangeEvent
           | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       ) => {
-        const newVal = parseInt(e.target.value + '');
+        const newVal = parseFloat(e.target.value + '');
         const newPerf = performance ? { ...performance } : {};
         newPerf.cpu = newPerf.cpu ?? 2;
         newPerf.gpu = newPerf.gpu ?? 1;
@@ -48,11 +48,13 @@ export function PerformanceSetting() {
           sx={{ '& .MuiInputBase-inputSizeSmall': { fontSize: '0.9rem' } }}
           onChange={onChange('cpu')}
         >
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={4}>4</MenuItem>
-          <MenuItem value={8}>8</MenuItem>
-          <MenuItem value={16}>16</MenuItem>
+          {[0.1, 0.5, 1, 2, 4, 6, 8, 10, 12, 16, 32, 64, 128, 192, 256].map(
+            (val, idx) => (
+              <MenuItem key={idx} value={val}>
+                {val}
+              </MenuItem>
+            )
+          )}
         </Select>
       </FormControl>
       <FormControl sx={{ width: '100%' }} size="small">
@@ -69,22 +71,35 @@ export function PerformanceSetting() {
           sx={{ '& .MuiInputBase-inputSizeSmall': { fontSize: '0.9rem' } }}
           onChange={onChange('gpu')}
         >
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={4}>4</MenuItem>
-          <MenuItem value={8}>8</MenuItem>
-          <MenuItem value={16}>16</MenuItem>
+          {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((val, idx) => (
+            <MenuItem key={idx} value={val}>
+              {val}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
       <FormControl sx={{ width: '100%' }} size="small">
-        <TextField
-          label="Memory size in GB"
+        <InputLabel
+          id="demo-simple-select-helper-label"
+          sx={{ fontSize: '0.9rem' }}
+        >
+          Memory size
+        </InputLabel>
+        <Select
+          value={(performance?.memory ?? 2) + ''}
+          label="Memory size"
+          fullWidth={true}
           sx={{ '& .MuiInputBase-inputSizeSmall': { fontSize: '0.9rem' } }}
-          type="number"
-          size="small"
-          value={performance?.memory ?? 2}
           onChange={onChange('memory')}
-        />
+        >
+          {[
+            0.5, 1, 2, 4, 6, 8, 10, 12, 16, 32, 64, 128, 256, 384, 512, 640
+          ].map((val, idx) => (
+            <MenuItem key={idx} value={val}>
+              {`${val} Gb`}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
     </Stack>
   );

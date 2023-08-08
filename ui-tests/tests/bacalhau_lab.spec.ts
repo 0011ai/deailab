@@ -234,7 +234,6 @@ test.describe('UI Test', () => {
 
     await page.getByRole('button', { name: 'RUN' }).click();
     await page.waitForTimeout(5000);
-    await page.getByRole('button', { name: 'GET RESULT' }).click();
     await page.waitForTimeout(5000);
     await page
       .getByRole('button', { name: 'Refresh the file browser.' })
