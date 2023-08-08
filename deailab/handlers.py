@@ -45,10 +45,17 @@ class RouteHandler(APIHandler):
                     json.dumps({"action": "RESOURCE_ERROR", "payload": check_response})
                 )
                 return
-            job_id = self.job_manager.execute(payload)
-            self.finish(
-                json.dumps({"action": "EXECUTING", "payload": {"jobId": job_id}})
-            )
+            try:
+                job_id = self.job_manager.execute(payload)
+                self.finish(
+                    json.dumps({"action": "EXECUTING", "payload": {"jobId": job_id}})
+                )
+            except Exception as e:
+                self.finish(
+                    json.dumps(
+                        {"action": "EXECUTION_ERROR", "payload": {"error": str(e)}}
+                    )
+                )
             return
         if action == "CLEAN_JOB":
             job_id = payload["jobId"]
@@ -125,23 +132,18 @@ class RouteHandler(APIHandler):
                 and deai_file_name is not None
             ):
                 dest = os.path.join(current_dir, deai_file_name)
-                response = self.job_manager.get_result(session_id, job_id, dest)
-                if response["task_id"] is None:
-                    self.finish(
-                        json.dumps(
-                            {
-                                "action": "DOWNLOAD_RESULT",
-                                "payload": {
-                                    "success": False,
-                                    "msg": response["msg"],
-                                },
-                            }
-                        )
-                    )
-                    return
-                self.finish(
-                    json.dumps(
-                        {
+                try:
+                    response = self.job_manager.get_result(session_id, job_id, dest)
+                    if response["task_id"] is None:
+                        result = {
+                            "action": "DOWNLOAD_RESULT",
+                            "payload": {
+                                "success": False,
+                                "msg": response["msg"],
+                            },
+                        }
+                    else:
+                        result = {
                             "action": "DOWNLOAD_RESULT",
                             "payload": {
                                 "success": True,
@@ -149,9 +151,14 @@ class RouteHandler(APIHandler):
                                 "task_id": response["task_id"],
                             },
                         }
-                    )
-                )
-                return
+
+                except Exception as e:
+                    result = {
+                        "action": "DOWNLOAD_RESULT",
+                        "payload": {"success": False, "msg": str(e)},
+                    }
+
+                return self.finish(json.dumps(result))
 
 
 def setup_handlers(web_app):

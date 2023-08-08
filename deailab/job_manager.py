@@ -187,8 +187,11 @@ class JobManager:
         self._get_result_task[task_id] = "pending"
 
         def thread_task():
-            session.get_results(job_id, dest)
-            self._get_result_task[task_id] = "finished"
+            try:
+                session.get_results(job_id, dest)
+                self._get_result_task[task_id] = "finished"
+            except Exception:
+                self._get_result_task[task_id] = "error"
 
         x = threading.Thread(target=thread_task)
         x.start()

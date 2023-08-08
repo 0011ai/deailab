@@ -9,6 +9,7 @@ import { ColorModeProvider } from '../react/provider/theme';
 import { JupyterContext } from '../react/provider/jupyter';
 import { ServiceManager } from '@jupyterlab/services';
 import { requestAPI } from '../handler';
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
 export class DeAIPanel extends ReactWidget {
   /**
@@ -55,7 +56,8 @@ export class DeAIPanel extends ReactWidget {
         value={{
           themeManager: this.options.themeManager,
           serviceManager: this.options.serviceManager,
-          context: this.options.context
+          context: this.options.context,
+          docManager: this.options.docManager
         }}
       >
         <Provider store={this._store}>
@@ -75,5 +77,6 @@ namespace DeAIPanel {
     context: DocumentRegistry.Context;
     themeManager?: IThemeManager;
     serviceManager: ServiceManager.IManager;
+    docManager: IDocumentManager;
   }
 }

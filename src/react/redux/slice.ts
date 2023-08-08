@@ -155,6 +155,16 @@ export const slice = createSlice({
           ...state,
           log: content
         };
+      } else if (action.payload.length === currentLog.length) {
+        const lastIdx = currentLog.length - 1;
+        const lastItem = { ...currentLog[lastIdx] };
+        lastItem.content = lastItem.content + ' .';
+        const content = [...currentLog];
+        content[lastIdx] = lastItem;
+        return {
+          ...state,
+          log: content
+        };
       } else {
         return { ...state };
       }
