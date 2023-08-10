@@ -1,6 +1,6 @@
 # deailab
 
-[![Github Actions Status](https://github.com/trungleduc/deailab/workflows/Build/badge.svg)](https://github.com/trungleduc/deailab/actions/workflows/build.yml)
+[![Github Actions Status](https://github.com/0011ai/deailab/workflows/Build/badge.svg)](https://github.com/0011ai/deailab/actions/workflows/build.yml)
 A DeAI JupyterLab extension.
 
 DeAILab is a JupyterLab extension to interact with the [Decentralized AI Request](https://github.com/profitgrowinginnovator/DeAIRequest) library.
