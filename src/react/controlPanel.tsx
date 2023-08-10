@@ -19,6 +19,7 @@ import { Contents } from '@jupyterlab/services';
 import { Dialog, showDialog } from '@jupyterlab/apputils';
 import { Poll } from '@lumino/polling';
 import { checkResultStatus } from './tools';
+import { PerformanceSetting } from './components/performanceSetting';
 
 export function ControlPanel() {
   const jupyterContext = useJupyter();
@@ -67,7 +68,6 @@ export function ControlPanel() {
     if (!context || !serviceManager) {
       return;
     }
-
     const path = context.path;
     const currentFile = await serviceManager.contents.get(path);
     await serviceManager.contents.save(context.path, {
@@ -97,7 +97,6 @@ export function ControlPanel() {
     }
 
     const path = context.path;
-    const currentFile = await serviceManager.contents.get(path);
     const nbPath = path.replace('.bhl.deai', '.ipynb');
     let nbContent: Contents.IModel | null = null;
     try {
@@ -117,10 +116,7 @@ export function ControlPanel() {
       contentWithoutLog['notebook'] = nbContent.content;
     }
 
-    await serviceManager.contents.save(context.path, {
-      ...currentFile,
-      content: JSON.stringify(contentWithoutLog, null, 2)
-    });
+    context.save();
 
     dispatch(
       reduxAction.logInfo({ msg: `Submitting job ${path}`, reset: true })
@@ -167,8 +163,16 @@ export function ControlPanel() {
         break;
       }
 
-      case 'EXECUTION_ERROR':
+      case 'EXECUTION_ERROR': {
+        const { error } = payload;
+        dispatch(
+          reduxAction.logError({
+            msg: `Execution failed with error ${error}`
+          })
+        );
+        setExecuting(false);
         break;
+      }
       default:
         break;
     }
@@ -223,6 +227,11 @@ export function ControlPanel() {
     dispatch(reduxAction.updateResultStatus(false));
   }, [dispatch, resultAvailable, jobId, currentDir, sessionId, deaiFileName]);
 
+  React.useEffect(() => {
+    if (resultAvailable) {
+      getResult();
+    }
+  }, [resultAvailable, getResult]);
   return (
     <Box className="jp-deai-control-panel">
       <AppBar position="static" sx={{ marginBottom: '20px' }}>
@@ -238,6 +247,11 @@ export function ControlPanel() {
         <StyledAccordion
           title="DOCKER IMAGE"
           panel={<GeneralSetting error={dockerError} />}
+          defaultExpanded={true}
+        />
+        <StyledAccordion
+          title="PERFORMANCE"
+          panel={<PerformanceSetting />}
           defaultExpanded={true}
         />
         <StyledAccordion
@@ -272,6 +286,7 @@ export function ControlPanel() {
             label="GET RESULT"
             icon={<Download color={resultAvailable ? 'primary' : 'disabled'} />}
             onClick={getResult}
+            sx={{ display: 'none' }}
           />
         </BottomNavigation>
       </Card>

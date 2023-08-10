@@ -7,6 +7,7 @@ import { DeAIPanel } from './bhlDocPanel';
 import { BhlDocWidget } from './bhlDocWidget';
 import { IThemeManager } from '@jupyterlab/apputils';
 import { ServiceManager } from '@jupyterlab/services';
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
 export class BhlDocWidgetFactory extends ABCWidgetFactory<BhlDocWidget> {
   constructor(options: BhlDocWidgetFactory.IOptions) {
@@ -14,6 +15,7 @@ export class BhlDocWidgetFactory extends ABCWidgetFactory<BhlDocWidget> {
     this._commands = options.commands;
     this._themeManager = options.themeManager;
     this._serviceManager = options.serviceManager;
+    this._docManager = options.docManager;
   }
 
   get commands(): CommandRegistry | undefined {
@@ -29,7 +31,8 @@ export class BhlDocWidgetFactory extends ABCWidgetFactory<BhlDocWidget> {
     const content = new DeAIPanel({
       context,
       themeManager: this._themeManager,
-      serviceManager: this._serviceManager
+      serviceManager: this._serviceManager,
+      docManager: this._docManager
     });
 
     const widget = new BhlDocWidget({ context, content });
@@ -40,6 +43,7 @@ export class BhlDocWidgetFactory extends ABCWidgetFactory<BhlDocWidget> {
   private _commands?: CommandRegistry;
   private _themeManager?: IThemeManager;
   private _serviceManager: ServiceManager.IManager;
+  private _docManager: IDocumentManager;
 }
 
 export namespace BhlDocWidgetFactory {
@@ -48,5 +52,6 @@ export namespace BhlDocWidgetFactory {
     commands: CommandRegistry;
     themeManager?: IThemeManager;
     serviceManager: ServiceManager.IManager;
+    docManager: IDocumentManager;
   }
 }

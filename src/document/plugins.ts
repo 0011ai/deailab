@@ -3,6 +3,7 @@ import {
   JupyterFrontEndPlugin
 } from '@jupyterlab/application';
 import { IThemeManager, WidgetTracker } from '@jupyterlab/apputils';
+import { IDocumentManager } from '@jupyterlab/docmanager';
 import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
 import { IBhlViewerTracker } from '../token';
@@ -14,11 +15,12 @@ export const bhlPlugin: JupyterFrontEndPlugin<IBhlViewerTracker> = {
   id: 'bhl-lab:document-plugin',
   autoStart: true,
   provides: IBhlViewerTracker,
-  requires: [IRenderMimeRegistry],
+  requires: [IRenderMimeRegistry, IDocumentManager],
   optional: [IThemeManager],
   activate: (
     app: JupyterFrontEnd,
     rendermime: IRenderMimeRegistry,
+    docManager: IDocumentManager,
     themeManager: IThemeManager
   ) => {
     const tracker = new WidgetTracker<BhlDocWidget>({
@@ -31,7 +33,8 @@ export const bhlPlugin: JupyterFrontEndPlugin<IBhlViewerTracker> = {
       rendermime,
       commands: app.commands,
       themeManager,
-      serviceManager: app.serviceManager
+      serviceManager: app.serviceManager,
+      docManager
     });
     widgetFactory.widgetCreated.connect((_, widget) => {
       widget.context.pathChanged.connect(() => {

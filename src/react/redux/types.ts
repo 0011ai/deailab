@@ -13,6 +13,7 @@ export interface IDeAIState {
   customDockerImage?: string;
   availableImages: string[];
   resources: IDict<IDeAIResource>;
+  performance?: { cpu?: number; gpu?: number; memory?: number };
   notebook?: IDict;
   log?: { level: 'info' | 'error'; content: string; timestamp: number }[];
   polling?: boolean;

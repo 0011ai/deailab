@@ -91,6 +91,12 @@ class JobManager:
             return
         connector.set_docker_image(docker_image)
 
+        # Set performance
+        performance = data.get("performance", {})
+        connector.set_cpu(str(performance.get("cpu", 2)))
+        connector.set_gpu(str(performance.get("gpu", 1)))
+        connector.set_memory(f'{performance.get("memory", 2)}Gb')
+        print("#######", connector.memory)
         # Set resources
         connector.remove_datasets()
         resources = data.get("resources", {})
@@ -187,8 +193,11 @@ class JobManager:
         self._get_result_task[task_id] = "pending"
 
         def thread_task():
-            session.get_results(job_id, dest)
-            self._get_result_task[task_id] = "finished"
+            try:
+                session.get_results(job_id, dest)
+                self._get_result_task[task_id] = "finished"
+            except Exception:
+                self._get_result_task[task_id] = "error"
 
         x = threading.Thread(target=thread_task)
         x.start()
