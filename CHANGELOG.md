@@ -2,6 +2,12 @@
 
 <!-- <START NEW CHANGELOG ENTRY> -->
 
+## 0.1.3
+
+No merged PRs
+
+<!-- <END NEW CHANGELOG ENTRY> -->
+
 ## 0.1.2
 
 ([Full Changelog](https://github.com/0011ai/deailab/compare/v0.1.1...3de77acf202e4328875b3a9c817ba9e4f6ad3cc3))
@@ -23,5 +29,3 @@
 ([GitHub contributors page for this release](https://github.com/0011ai/deailab/graphs/contributors?from=2023-07-13&to=2023-08-11&type=c))
 
 [@dependabot](https://github.com/search?q=repo%3A0011ai%2Fdeailab+involves%3Adependabot+updated%3A2023-07-13..2023-08-11&type=Issues) | [@trungleduc](https://github.com/search?q=repo%3A0011ai%2Fdeailab+involves%3Atrungleduc+updated%3A2023-07-13..2023-08-11&type=Issues)
-
-<!-- <END NEW CHANGELOG ENTRY> -->
