@@ -26,7 +26,6 @@ class RouteHandler(APIHandler):
     @tornado.web.authenticated
     async def post(self):
         """Handler for the POST request"""
-
         body = self.get_json_body()
         action = body.get("action")
         payload = body.get("payload")

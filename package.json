@@ -25,7 +25,7 @@
     "style": "style/index.css",
     "repository": {
         "type": "git",
-        "url": "https://github.com/trungleduc/deailab.git"
+        "url": "https://github.com/0011ai/deailab.git"
     },
     "scripts": {
         "build": "jlpm build:lib && jlpm build:labextension:dev",

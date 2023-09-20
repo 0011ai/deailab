@@ -96,11 +96,10 @@ class JobManager:
         connector.set_cpu(str(performance.get("cpu", 2)))
         connector.set_gpu(str(performance.get("gpu", 1)))
         connector.set_memory(f'{performance.get("memory", 2)}Gb')
-        print("#######", connector.memory)
+        #print("#######", connector.get_memory(), connector.get_cpu(), connector.get_gpu())
         # Set resources
         connector.remove_datasets()
         resources = data.get("resources", {})
-
         for resource in resources.values():
             res_type = resource["type"]
             res_value = resource["value"]
@@ -122,7 +121,6 @@ class JobManager:
                     encrypted=encrypted,
                 )
         job_id = connector.submit_job(nb_path)
-
         self._notebooks[job_id] = nb_path
         return job_id
 

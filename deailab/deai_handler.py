@@ -45,7 +45,6 @@ def check_data(data: Dict) -> Dict:
     Returns:
         Dict: Dictionary of invalid resources.
     """
-
     resources = data.get("resources", {})
     response = {}
     MSG = "Resource is not available"
