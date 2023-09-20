@@ -1,20 +1,20 @@
 {
     "name": "deailab",
-    "version": "0.1.4",
+    "version": "0.1.8",
     "description": "A JupyterLab extension for DeAI.",
     "keywords": [
         "jupyter",
         "jupyterlab",
         "jupyterlab-extension"
     ],
-    "homepage": "https://github.com/trungleduc/deailab",
+    "homepage": "https://github.com/0011ai/deailab",
     "bugs": {
-        "url": "https://github.com/trungleduc/deailab/issues"
+        "url": "https://github.com/0011ai/deailab/issues"
     },
-    "license": "BSD-3-Clause",
+    "license": "MIT",
     "author": {
-        "name": "My Name",
-        "email": "me@test.com"
+        "name": "Maarten Ectors",
+        "email": "maarten@0011.ai"
     },
     "files": [
         "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
