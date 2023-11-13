@@ -3,7 +3,7 @@ requires = [
     "hatchling>=1.5.0", 
     "jupyterlab>=4.0.0,<5", 
     "hatch-nodejs-version", 
-    "deairequest>=0.0.18",
+    "deairequest>=0.0.19",
     "python-box>=5.4.1",
     "bacalhau_sdk>=1.0.3",
     "ipfshttpclient>=0.8.0a2",
